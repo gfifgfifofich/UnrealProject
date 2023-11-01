@@ -22,6 +22,8 @@ class AGamePlayerController : public APlayerController
 public:
 	AGamePlayerController();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	float ShortPressThreshold;
@@ -38,9 +40,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationClickAction;
 
+
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SetObjScaleClickAction;
+
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationTouchAction;
+
+
+
+	/** Camera Rotation */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* CamRotInput;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -57,6 +70,16 @@ protected:
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
+
+	void OnObjScaleChange();
+
+	FVector2D PrevMousePos = {0.0f,0.0f};
+	float PrevRotation = 0.0f;
+	bool CameraRotationPressed = false;
+
+	void JustPressedCamRotInput();
+	void ReleasedCamRotInput();
+
 
 private:
 	FVector CachedDestination;

@@ -17,6 +17,8 @@ public:
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
+	
+
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
@@ -25,11 +27,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 	void SpawnActor();
 
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
+	void DoSimthingWithObjects();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	void ZoomControl(float Scroll);
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> actirBPToSpawn;
 
 
 private:
+
+	float NeededCameraArmLength = 800.0f;
+
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;

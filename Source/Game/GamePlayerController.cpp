@@ -14,6 +14,8 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
+
+
 AGamePlayerController::AGamePlayerController()
 {
 	bShowMouseCursor = true;
@@ -48,6 +50,13 @@ void AGamePlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AGamePlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AGamePlayerController::OnSetDestinationReleased);
 
+		// Setup mouse input events
+		EnhancedInputComponent->BindAction(SetObjScaleClickAction, ETriggerEvent::Completed, this, &AGamePlayerController::OnObjScaleChange);
+
+		EnhancedInputComponent->BindAction(CamRotInput, ETriggerEvent::Started, this, &AGamePlayerController::JustPressedCamRotInput);
+		EnhancedInputComponent->BindAction(CamRotInput, ETriggerEvent::Completed, this, &AGamePlayerController::ReleasedCamRotInput);
+		EnhancedInputComponent->BindAction(CamRotInput, ETriggerEvent::Canceled, this, &AGamePlayerController::ReleasedCamRotInput);
+
 		// Setup touch input events
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AGamePlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AGamePlayerController::OnTouchTriggered);
@@ -60,6 +69,12 @@ void AGamePlayerController::SetupInputComponent()
 	}
 }
 
+void AGamePlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	
+}
 void AGamePlayerController::OnInputStarted()
 {
 	StopMovement();
@@ -95,6 +110,9 @@ void AGamePlayerController::OnSetDestinationTriggered()
 	{
 		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
 		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+		
+
+
 	}
 }
 
@@ -122,4 +140,43 @@ void AGamePlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+
+void AGamePlayerController::OnObjScaleChange()
+{
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+	
+	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	
+	
+
+	// If we hit a surface, cache the location
+	if (bHitSuccessful)
+	{
+
+		if (Hit.GetActor()->ActorHasTag("Pickup"))
+		{
+			Hit.GetActor()->SetActorScale3D(Hit.GetActor()->GetActorScale3D() + FVector(0.1f, 0.1f, 0.1f));
+
+
+		}
+	}
+
+}
+
+/*
+
+	FVector2D pos;
+	GetWorld()->GetGameViewport()->GetMousePosition(pos);
+	*/
+
+void AGamePlayerController::JustPressedCamRotInput()
+{
+	CameraRotationPressed = true;
+}
+void AGamePlayerController::ReleasedCamRotInput()
+{
+	CameraRotationPressed = false;
 }
