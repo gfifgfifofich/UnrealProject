@@ -38,10 +38,15 @@ public:
 	TSubclassOf<AActor> actirBPToSpawn;
 
 
+	bool CameraRotationPressed = false;
+	bool MovingControlsPressed = false;
 private:
 
 	float NeededCameraArmLength = 800.0f;
 
+	FVector2D PrevMousePos = { 0.0f,0.0f };
+	float PrevRotation = 0.0f;
+	float TargetRotation = 0.0f;
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;

@@ -73,8 +73,6 @@ protected:
 
 	void OnObjScaleChange();
 
-	FVector2D PrevMousePos = {0.0f,0.0f};
-	float PrevRotation = 0.0f;
 	bool CameraRotationPressed = false;
 
 	void JustPressedCamRotInput();

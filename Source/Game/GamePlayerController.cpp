@@ -72,12 +72,16 @@ void AGamePlayerController::SetupInputComponent()
 void AGamePlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if(GetPawn()!=nullptr)
+		Cast<AGameCharacter>(GetPawn())->CameraRotationPressed = CameraRotationPressed;
 
-	
 }
 void AGamePlayerController::OnInputStarted()
 {
 	StopMovement();
+
+	if (GetPawn() != nullptr)
+		Cast<AGameCharacter>(GetPawn())->MovingControlsPressed = true;
 }
 
 // Triggered every frame when the input is held down
@@ -112,12 +116,12 @@ void AGamePlayerController::OnSetDestinationTriggered()
 		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
 		
 
-
 	}
 }
 
 void AGamePlayerController::OnSetDestinationReleased()
 {
+
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{
@@ -126,6 +130,8 @@ void AGamePlayerController::OnSetDestinationReleased()
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
 
+	if (GetPawn() != nullptr)
+		Cast<AGameCharacter>(GetPawn())->MovingControlsPressed = false;
 	FollowTime = 0.f;
 }
 
@@ -165,12 +171,6 @@ void AGamePlayerController::OnObjScaleChange()
 	}
 
 }
-
-/*
-
-	FVector2D pos;
-	GetWorld()->GetGameViewport()->GetMousePosition(pos);
-	*/
 
 void AGamePlayerController::JustPressedCamRotInput()
 {

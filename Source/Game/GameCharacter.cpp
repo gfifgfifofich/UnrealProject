@@ -31,7 +31,7 @@ AGameCharacter::AGameCharacter()
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->SetUsingAbsoluteRotation(false); // Don't want arm to rotate when character does
+	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
 	CameraBoom->TargetArmLength = 800.f;
 	NeededCameraArmLength = 800.f;
 	CameraBoom->SetRelativeRotation(FRotator(0.f, 0.0f, 0.f));
@@ -49,14 +49,36 @@ AGameCharacter::AGameCharacter()
 
 void AGameCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
-	CameraBoom->SetUsingAbsoluteRotation(false);
+	CameraBoom->SetUsingAbsoluteRotation(true);
+	Super::Tick(DeltaSeconds);
 	
-	if (NeededCameraArmLength <= 100.0f)
-		NeededCameraArmLength = 100.0f;
-	CameraBoom->SetRelativeRotation(FRotator(-(1.0f-(100.0f / CameraBoom->TargetArmLength) + 0.1f) * 40.0f,0.0f , 0.0f));
-	CameraBoom->TargetArmLength -= (CameraBoom->TargetArmLength - NeededCameraArmLength) * DeltaSeconds * 10.0f;
+	if (NeededCameraArmLength <= 400.0f)
+		NeededCameraArmLength = 400.0f;
+
+	if (NeededCameraArmLength >= 2000.0f)
+		NeededCameraArmLength = 2000.0f;
+
+	float snapstep = DeltaSeconds * 10.0f;
+	if (snapstep > 1.0f)
+		snapstep = 1.0f;
+
+	CameraBoom->TargetArmLength -= (CameraBoom->TargetArmLength - NeededCameraArmLength) * snapstep;
 	
+	FVector2D pos;
+	GetWorld()->GetGameViewport()->GetMousePosition(pos);
+
+	FVector2D dif = pos - PrevMousePos;
+	
+	float rotdif = (dif.X) * snapstep *2.0f;
+	if (!CameraRotationPressed)//
+		rotdif = 0.0f;
+	
+	CameraBoom->SetRelativeRotation(FRotator(-(1.0f - (400.0f / CameraBoom->TargetArmLength) + 0.3f) * 40.0f, CameraBoom->GetRelativeRotation().Yaw + rotdif, 0.0f));
+
+
+
+	PrevRotation = CameraBoom->GetRelativeRotation().Yaw;
+	PrevMousePos = pos;
 }
 
 
