@@ -18,7 +18,6 @@ UCLASS()
 class AGamePlayerController : public APlayerController
 {
 	GENERATED_BODY()
-
 public:
 	AGamePlayerController();
 

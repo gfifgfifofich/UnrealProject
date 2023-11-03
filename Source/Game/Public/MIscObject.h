@@ -14,6 +14,10 @@ class GAME_API AMIscObject : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMIscObject();
+	
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* Mesh;
 
 protected:
 	// Called when the game starts or when spawned

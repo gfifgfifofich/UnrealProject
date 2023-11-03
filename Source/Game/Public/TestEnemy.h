@@ -12,7 +12,6 @@ class GAME_API ATestEnemy : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ATestEnemy();
 
 protected:
@@ -27,6 +26,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	float health = 10.0f;
+
 
 	FVector Target;
 
