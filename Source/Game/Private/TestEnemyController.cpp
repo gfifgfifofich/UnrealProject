@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "TestEnemyController.h"
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "TestEnemyController.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "../GameCharacter.h"
